@@ -13,6 +13,7 @@ Author(s): Melissa LeBlanc-Williams for Adafruit Industries
 
 import digitalio
 import board
+import time
 from PIL import Image, ImageDraw
 import adafruit_rgb_display.ili9341 as ili9341
 import adafruit_rgb_display.st7789 as st7789  # pylint: disable=unused-import
@@ -73,7 +74,7 @@ draw = ImageDraw.Draw(image)
 # Draw a black filled box to clear the image.
 draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 disp.image(image)
-
+time.sleep(3)
 buttonA = digitalio.DigitalInOut(board.D23)
 buttonB = digitalio.DigitalInOut(board.D24)
 buttonA.switch_to_input()
@@ -85,6 +86,8 @@ backlight.value = True
 
 def display_img(file_name):
     image = Image.open(file_name)
+
+    print(file_name)
 
     # Scale the image to the smaller screen dimension
     image_ratio = image.width / image.height
@@ -104,19 +107,17 @@ def display_img(file_name):
 
     # Display image.
     disp.image(image)
-
+    time.sleep(1)
 
 
 if __name__ == '__main__':
     # Main loop:
-    
+
     display_img('red.jpg')
-    
+
     while True:
-        
-        if buttonA.value and buttonB.value:
-            backlight.value = False  # turn off backlight
+
         if buttonB.value and not buttonA.value:  # just button A pressed
-            display_img('PlacingMiniPiTFTonPi.jpg') # set the screen to the users color
+            display_img('red.jpg') # set the screen to the users color
         if buttonA.value and not buttonB.value:  # just button B pressed
             display_img('PlacingMiniPiTFTonPi.jpg')  # set the screen to white
