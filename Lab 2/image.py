@@ -74,41 +74,49 @@ draw = ImageDraw.Draw(image)
 draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 disp.image(image)
 
-image = Image.open("red.jpg")
+buttonA = digitalio.DigitalInOut(board.D23)
+buttonB = digitalio.DigitalInOut(board.D24)
+buttonA.switch_to_input()
+buttonB.switch_to_input()
+
 backlight = digitalio.DigitalInOut(board.D22)
 backlight.switch_to_output()
 backlight.value = True
 
+def display_img(file_name):
+    image = Image.open(file_name)
 
-# Scale the image to the smaller screen dimension
-image_ratio = image.width / image.height
-screen_ratio = width / height
-if screen_ratio < image_ratio:
-    scaled_width = image.width * height // image.height
-    scaled_height = height
-else:
-    scaled_width = width
-    scaled_height = image.height * width // image.width
-image = image.resize((scaled_width, scaled_height), Image.BICUBIC)
-
-# Crop and center the image
-x = scaled_width // 2 - width // 2
-y = scaled_height // 2 - height // 2
-image = image.crop((x, y, x + width, y + height))
-
-# Display image.
-disp.image(image)
-
-
-# Main loop:
-while True:
-    if buttonA.value and buttonB.value:
-        backlight.value = False  # turn off backlight
+    # Scale the image to the smaller screen dimension
+    image_ratio = image.width / image.height
+    screen_ratio = width / height
+    if screen_ratio < image_ratio:
+        scaled_width = image.width * height // image.height
+        scaled_height = height
     else:
-        backlight.value = True  # turn on backlight
-    if buttonB.value and not buttonA.value:  # just button A pressed
-        display.fill(screenColor) # set the screen to the users color
-    if buttonA.value and not buttonB.value:  # just button B pressed
-        display.fill(color565(255, 255, 255))  # set the screen to white
-    if not buttonA.value and not buttonB.value:  # none pressed
-        display.fill(color565(0, 255, 0))  # green
+        scaled_width = width
+        scaled_height = image.height * width // image.width
+    image = image.resize((scaled_width, scaled_height), Image.BICUBIC)
+
+    # Crop and center the image
+    x = scaled_width // 2 - width // 2
+    y = scaled_height // 2 - height // 2
+    image = image.crop((x, y, x + width, y + height))
+
+    # Display image.
+    disp.image(image)
+
+
+
+if __name__ == '__main__':
+    # Main loop:
+    
+    display_img('img.png')
+    
+    while True:
+        
+        if buttonA.value and buttonB.value:
+            backlight.value = False  # turn off backlight
+        if buttonB.value and not buttonA.value:  # just button A pressed
+            display_img('img.png') # set the screen to the users color
+        if buttonA.value and not buttonB.value:  # just button B pressed
+            display_img('img.png')  # set the screen to white
