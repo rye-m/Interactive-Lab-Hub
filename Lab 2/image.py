@@ -110,13 +110,13 @@ def display_img(file_name):
 if __name__ == '__main__':
     # Main loop:
     
-    display_img('img.png')
+    display_img('red.jpg')
     
     while True:
         
         if buttonA.value and buttonB.value:
             backlight.value = False  # turn off backlight
         if buttonB.value and not buttonA.value:  # just button A pressed
-            display_img('img.png') # set the screen to the users color
+            display_img('PlacingMiniPiTFTonPi.jpg') # set the screen to the users color
         if buttonA.value and not buttonB.value:  # just button B pressed
-            display_img('img.png')  # set the screen to white
+            display_img('PlacingMiniPiTFTonPi.jpg')  # set the screen to white
