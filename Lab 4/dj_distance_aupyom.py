@@ -53,29 +53,29 @@ def runExample():
     sampler = Sampler()
     s1 = Sound.from_file("music/Time2Shine.wav")
     sampler.play(s1)
+	
+	# start sensoring
+    print("\nSparkFun Proximity Sensor VCN4040 Example 1\n")
+    oProx = qwiic_proximity.QwiicProximity()
 
-    #start sensoring
-	print("\nSparkFun Proximity Sensor VCN4040 Example 1\n")
-	oProx = qwiic_proximity.QwiicProximity()
-
-	if oProx.connected == False:
-		print("The Qwiic Proximity device isn't connected to the system. Please check your connection", \
+    if oProx.connected == False:
+        print("The Qwiic Proximity device isn't connected to the system. Please check your connection", \
 			file=sys.stderr)
-		return
+        return
 
-	oProx.begin()
+    oProx.begin()
 
-	while True:
-		proxValue = oProx.get_proximity()
-		print("Proximity Value: %d" % proxValue)
-		
-		if proxValue <= 6000:
-			s1.pitch_shift = +10
-		elif proxValue <= 12000:
-			s1.pitch_shift = 0
-		else:
-			s1.pitch_shift = -10
-		time.sleep(.2)
+    while True:
+        proxValue = oProx.get_proximity()
+        print("Proximity Value: %d" % proxValue)
+
+        if proxValue <= 6000:
+            s1.pitch_shift = +10
+        elif proxValue <= 12000:
+            s1.pitch_shift = 0
+        else:
+            s1.pitch_shift = -10
+        time.sleep(.2)
 
 
 if __name__ == '__main__':
