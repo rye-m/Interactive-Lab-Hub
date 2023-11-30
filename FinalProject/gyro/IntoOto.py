@@ -44,6 +44,8 @@ from __future__ import print_function
 import numpy
 import time
 import sys
+import qwiic
+import qwiic_proximity
 from aupyom import Sampler, Sound
 from aupyom.util import example_audio_file
 
@@ -52,7 +54,11 @@ from aupyom.util import example_audio_file
 # SPDX-License-Identifier: MIT
 import board
 from adafruit_lsm6ds.lsm6ds3 import LSM6DS3
-
+"""
+	Reading distance from the laser based VL53L1X
+	This example prints the distance to an object. If you are getting weird
+	readings, be sure the vacuum tape has been removed from the sensor.
+"""
 
 def runExample():
 
@@ -62,9 +68,27 @@ def runExample():
     sampler.play(s1)
 	
     # start sensoring
+    # gyro and accelaromator
     i2c = board.I2C()  # uses board.SCL and board.SDA
     # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
     sensor = LSM6DS3(i2c)
+
+    # distance sensor
+    print("\nSparkFun Proximity Sensor VCN4040 Example 1\n")
+    oProx = qwiic_proximity.QwiicProximity()
+
+    if oProx.connected == False:
+        print("The Qwiic Proximity device isn't connected to the system. Please check your connection", \
+			file=sys.stderr)
+        return
+
+    oProx.begin()
+
+    while True:
+        proxValue = oProx.get_proximity()
+        print("Proximity Value: %d" % proxValue)
+
+
 
 
     # Creeate sound
