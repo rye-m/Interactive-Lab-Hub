@@ -1,19 +1,12 @@
 from __future__ import print_function
 import time
 import board
-import busio
-import adafruit_mpr121
 import ssl
-import qwiic_joystick
 import time
 import sys
 
 import paho.mqtt.client as mqtt
 import uuid
-
-import numpy
-import qwiic
-import qwiic_proximity
 
 # SPDX-FileCopyrightText: Copyright (c) 2022 Edrig
 #
@@ -25,6 +18,12 @@ from adafruit_lsm6ds.lsm6ds3 import LSM6DS3
 	This example prints the distance to an object. If you are getting weird
 	readings, be sure the vacuum tape has been removed from the sensor.
 """
+def change_dB(raw_data):
+	return raw_data*2
+
+def change_Hz(raw_data):
+	max_hz = 22000
+	return abs(max_hz/raw_data)
 
 
 def runExample():
@@ -33,6 +32,7 @@ def runExample():
 	sensor = LSM6DS3(i2c)
 
 	## JOYSTICK
+	"""
 	print("\nSparkFun qwiic Joystick   Example 1\n")
 	myJoystick = qwiic_joystick.QwiicJoystick()
 
@@ -44,6 +44,7 @@ def runExample():
 	myJoystick.begin()
 
 	print("Initialized. Firmware Version: %s" % myJoystick.version)
+	"""
 
     ## MQTT
 	client = mqtt.Client(str(uuid.uuid1()))
@@ -58,16 +59,16 @@ def runExample():
 	while True:
 		ax, ay, az = sensor.acceleration
 		gx, gy, gz = sensor.gyro
-		client.publish(topic_gyro, '{:.1f},{:.1f}'.format(ax, ay))
+		client.publish(topic_gyro, '{:.1f} {:.1f}'.format(change_dB(ax), change_Hz(ay)))
 
         #print("ax: {:10.4f}, ay: {:10.4f}, az: {:10.4f}".format(ax, ay, az))
 		#print("ax: {:10.4f}, ay: {:10.4f}, az: {:10.4f}, gx: {:10.4f}, gy: {:10.4f}, gz: {:10.4f}".format(ax, ay, az, gx, gy, gz))
 
-
+		"""
 		if myJoystick.button == 0:
 			print('pushed')
 			client.publish(topic_heartbeat, '108')
-
+		"""
 		time.sleep(.2)
 
 if __name__ == '__main__':
